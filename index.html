@@ -29,7 +29,7 @@
 
         <main class="p-4 md:p-8">
             <!-- 狀態提示 -->
-            <div id="status-banner" class="hidden mb-6 bg-indigo-50 border border-indigo-100 text-indigo-700 px-4 py-3 rounded-xl flex items-center gap-2 text-sm animate-fade-in">
+            <div id="status-banner" class="hidden mb-6 bg-indigo-50 border border-indigo-100 text-indigo-700 px-4 py-3 rounded-xl flex items-center gap-2 text-sm animate-fade-in shadow-sm">
                 <i data-lucide="database" class="w-4 h-4"></i> <span id="status-text">系統連線中...</span>
             </div>
 
@@ -37,70 +37,74 @@
             <div id="view-admin" class="space-y-6">
                 <div id="setup-area" class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="space-y-4">
+                        <!-- QR Code -->
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 text-center flex flex-col items-center">
-                            <h3 class="font-bold mb-4 flex items-center gap-2 text-slate-700"><i data-lucide="qr-code" class="w-4 h-4"></i> 報名 QR Code</h3>
+                            <h3 class="font-bold mb-4 flex items-center gap-2 text-slate-700"><i data-lucide="qr-code" class="w-4 h-4 text-indigo-500"></i> 報名 QR Code</h3>
                             <div class="w-full mb-4 space-y-2">
                                 <p class="text-[10px] text-red-500 font-bold text-left flex items-center gap-1"><i data-lucide="link" class="w-3 h-3"></i> 貼上目前網址更新 QR：</p>
-                                <input type="text" id="share-url" oninput="updateQrCode()" class="w-full text-[10px] p-2 border rounded bg-slate-50 outline-none" placeholder="請貼上 GitHub 網址">
+                                <input type="text" id="share-url" oninput="updateQrCode()" class="w-full text-[10px] p-2 border rounded bg-slate-50 outline-none focus:ring-1 focus:ring-indigo-500" placeholder="請貼上您的 GitHub Pages 連結">
                             </div>
                             <div class="aspect-square w-full bg-white rounded-xl mb-4 flex items-center justify-center border-2 border-slate-100 p-2 shadow-inner overflow-hidden">
                                 <img id="qr-img" src="" alt="QR Code" class="w-full h-full object-contain">
                             </div>
+                            <p class="text-[10px] text-slate-400 leading-tight">同學掃描後請點擊「學生填單」</p>
                         </div>
+                        <!-- 名額設定 -->
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                             <h3 class="font-bold mb-4 flex items-center gap-2 text-slate-700"><i data-lucide="settings" class="w-4 h-4"></i> 名額設定</h3>
                             <div class="space-y-3">
-                                <div><label class="text-xs text-slate-500 block">正取人數</label><input type="number" id="setting-winners" value="10" class="w-full p-2 border rounded text-sm"></div>
-                                <div><label class="text-xs text-slate-500 block">備取人數</label><input type="number" id="setting-waitlist" value="10" class="w-full p-2 border rounded text-sm"></div>
+                                <div><label class="text-xs text-slate-500 block mb-1">正取人數</label><input type="number" id="setting-winners" value="10" class="w-full p-2 border rounded text-sm"></div>
+                                <div><label class="text-xs text-slate-500 block mb-1">備取人數</label><input type="number" id="setting-waitlist" value="10" class="w-full p-2 border rounded text-sm"></div>
                             </div>
                         </div>
                     </div>
 
+                    <!-- 即時名單 -->
                     <div class="md:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col min-h-[500px]">
                         <div class="bg-slate-50 p-4 border-b flex justify-between items-center">
                             <span class="font-bold text-slate-700 flex items-center gap-2">
                                 <i data-lucide="users" class="w-4 h-4 text-indigo-500"></i> 已報名：<span id="student-count" class="text-indigo-600">0</span> 位
                             </span>
-                            <button onclick="handleDraw()" class="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-bold hover:bg-indigo-700 shadow-lg transition-all active:scale-95">開始抽籤</button>
+                            <button onclick="handleDraw()" class="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-bold hover:bg-indigo-700 shadow-lg transition-all active:scale-95 disabled:bg-slate-300" id="draw-btn">開始抽籤</button>
                         </div>
                         <div id="student-list-container" class="flex-1 overflow-y-auto">
                             <div id="empty-list" class="h-full flex flex-col items-center justify-center text-slate-300 italic p-12 text-center">
-                                <i data-lucide="clipboard-list" class="w-16 h-16 mb-2 opacity-10"></i><p>尚無人報名<br><span class="text-xs not-italic">請分享 QR Code 給同學填寫</span></p>
+                                <i data-lucide="clipboard-list" class="w-16 h-16 mb-2 opacity-10"></i><p>尚無人報名<br><span class="text-xs not-italic">請分享上方 QR Code 給同學</span></p>
                             </div>
                             <table id="student-table" class="hidden w-full text-sm">
-                                <thead class="bg-slate-50 sticky top-0 text-left"><tr><th class="p-4 font-semibold">姓名</th><th class="p-4 font-semibold">學號</th><th class="p-4 font-semibold text-xs">系所</th></tr></thead>
+                                <thead class="bg-slate-50 sticky top-0 text-left"><tr><th class="p-4 font-semibold">姓名</th><th class="p-4 font-semibold">學號</th><th class="p-4 font-semibold">系所</th></tr></thead>
                                 <tbody id="student-tbody"></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
 
-                <!-- 結果顯示區 -->
+                <!-- 結果顯示 -->
                 <div id="result-area" class="hidden space-y-6 animate-fade-in">
                     <div class="flex flex-col md:flex-row justify-between items-center gap-4 bg-indigo-50 p-5 rounded-2xl border border-indigo-100 shadow-sm">
                         <div class="flex items-center gap-3">
-                            <div class="bg-indigo-600 text-white p-2 rounded-lg"><i data-lucide="award" class="w-5 h-5"></i></div>
+                            <div class="bg-indigo-600 text-white p-2 rounded-lg shadow-md"><i data-lucide="award" class="w-5 h-5"></i></div>
                             <h2 class="text-xl font-bold text-indigo-900 leading-tight">抽籤結果已產生</h2>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="copyResults()" class="bg-white border border-indigo-200 px-4 py-2 rounded-xl text-sm font-bold text-indigo-700 hover:bg-indigo-50 transition-colors">複製名單</button>
-                            <button onclick="resetSystem()" class="text-red-600 bg-white border border-red-100 px-4 py-2 rounded-xl text-sm font-bold hover:bg-red-50 transition-colors">清空重抽</button>
+                            <button onclick="copyResults()" class="bg-white border border-indigo-200 px-4 py-2 rounded-xl text-sm font-bold text-indigo-700 hover:bg-indigo-50">複製名單</button>
+                            <button onclick="resetSystem()" class="text-red-600 bg-white border border-red-100 px-4 py-2 rounded-xl text-sm font-bold hover:bg-red-50">清空重抽</button>
                         </div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                            <div class="p-4 border-b-4 border-green-500 bg-green-50 font-bold text-green-800 flex justify-between">
+                            <div class="p-4 border-b-4 border-green-500 bg-green-50 font-bold text-green-800 flex justify-between items-center">
                                 <span>正取名單 (錄取)</span>
                                 <span id="res-winner-count" class="text-xs bg-green-100 px-2 py-1 rounded-full">0位</span>
                             </div>
-                            <div id="winners-list" class="p-4 divide-y divide-slate-50"></div>
+                            <div id="winners-list" class="p-4 divide-y divide-slate-50 min-h-[100px]"></div>
                         </div>
                         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                            <div class="p-4 border-b-4 border-amber-500 bg-amber-50 font-bold text-amber-800 flex justify-between">
+                            <div class="p-4 border-b-4 border-amber-500 bg-amber-50 font-bold text-amber-800 flex justify-between items-center">
                                 <span>備取名單 (排序)</span>
                                 <span id="res-waitlist-count" class="text-xs bg-amber-100 px-2 py-1 rounded-full">0位</span>
                             </div>
-                            <div id="waitlist-list" class="p-4 divide-y divide-slate-50"></div>
+                            <div id="waitlist-list" class="p-4 divide-y divide-slate-50 min-h-[100px]"></div>
                         </div>
                     </div>
                 </div>
@@ -110,32 +114,32 @@
             <div id="view-student" class="hidden max-w-md mx-auto py-4">
                 <div id="student-form-card" class="bg-white p-8 rounded-3xl shadow-xl border border-slate-200">
                     <div class="mb-8 text-center">
-                        <div class="inline-block p-3 bg-indigo-50 text-indigo-600 rounded-2xl mb-4">
+                        <div class="inline-block p-4 bg-indigo-50 text-indigo-600 rounded-2xl mb-4 shadow-inner">
                             <i data-lucide="user-plus" class="w-8 h-8"></i>
                         </div>
                         <h2 class="text-2xl font-bold text-slate-800 leading-tight">加選抽籤報名</h2>
-                        <p class="text-slate-400 text-sm mt-1">請確實填寫資料以參加抽籤</p>
+                        <p class="text-slate-400 text-sm mt-1">填寫資料後點擊下方按鈕提交</p>
                     </div>
                     <form id="lottery-form" class="space-y-5">
                         <div class="space-y-1">
                             <label class="text-sm font-bold text-slate-700 ml-1">姓名</label>
-                            <input type="text" id="input-name" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:border-indigo-500 transition-colors" placeholder="王小明">
+                            <input type="text" id="input-name" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:border-indigo-500 transition-all" placeholder="例如：王小明">
                         </div>
                         <div class="space-y-1">
                             <label class="text-sm font-bold text-slate-700 ml-1">學號</label>
-                            <input type="text" id="input-sid" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none font-mono focus:border-indigo-500 transition-colors" placeholder="B11001234">
+                            <input type="text" id="input-sid" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none font-mono focus:border-indigo-500 transition-all" placeholder="例如：B11001234">
                         </div>
                         <div class="space-y-1">
                             <label class="text-sm font-bold text-slate-700 ml-1">系所</label>
-                            <input type="text" id="input-dept" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:border-indigo-500 transition-colors" placeholder="中文系">
+                            <input type="text" id="input-dept" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:border-indigo-500 transition-all" placeholder="例如：中文系">
                         </div>
                         <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-indigo-100 active:scale-95 transition-all mt-4">提交報名資料</button>
                     </form>
                 </div>
                 <div id="submit-success" class="hidden bg-white p-10 rounded-3xl shadow-xl text-center border border-slate-100 animate-fade-in">
                     <i data-lucide="check-circle-2" class="w-16 h-16 text-green-500 mx-auto mb-4"></i>
-                    <h2 class="text-2xl font-bold mb-2">提交成功！</h2>
-                    <p class="text-slate-500 text-sm mb-6">資料已傳送至雲端，請等待抽籤結果。</p>
+                    <h2 class="text-2xl font-bold mb-2 text-slate-800">提交成功！</h2>
+                    <p class="text-slate-500 text-sm mb-6">資料已傳送至雲端名單。</p>
                     <div id="student-status-box" class="mt-6 pt-6 border-t border-slate-100 hidden">
                         <h4 class="text-xs font-bold text-slate-400 tracking-widest mb-4 uppercase">您的中籤狀態</h4>
                         <div id="status-content"></div>
@@ -146,7 +150,7 @@
     </div>
 
     <script>
-        // UI 基本控制 (切換頁面與 QR Code)
+        // --- UI 控制函數 (全域) ---
         window.switchView = function(view) {
             document.getElementById('view-admin').classList.toggle('hidden', view !== 'admin');
             document.getElementById('view-student').classList.toggle('hidden', view !== 'student');
@@ -156,8 +160,10 @@
         };
 
         window.updateQrCode = function() {
-            const url = document.getElementById('share-url').value.trim() || window.location.href;
-            document.getElementById('qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=${encodeURIComponent(url)}`;
+            const input = document.getElementById('share-url');
+            const url = input.value.trim() || window.location.href;
+            const qrImg = document.getElementById('qr-img');
+            qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=${encodeURIComponent(url)}`;
         };
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -171,8 +177,8 @@
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, doc, addDoc, setDoc, onSnapshot, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- Firebase 設定區 ---
-        // 重要：手動部署時請將 manualConfig 替換成您的 Firebase 配置
+        // --- 重要：Firebase 設定 ---
+        // 請將下面 null 替換成您的 Firebase Config 物件
         const manualConfig = {
   apiKey: "AIzaSyCCtIAhKsr69RdOwdGC8l0bXgC6UYGh0X0",
   authDomain: "lotte-3c32e.firebaseapp.com",
@@ -184,21 +190,25 @@
 }; 
 
         let config = manualConfig;
-        try { if(!config) config = JSON.parse(__firebase_config); } catch(e) {}
+        // 如果手動設定為空，才嘗試抓系統變數
+        try { if(!config && typeof __firebase_config !== 'undefined') config = JSON.parse(__firebase_config); } catch(e) {}
+
+        const banner = document.getElementById('status-banner');
+        const statusText = document.getElementById('status-text');
 
         if (!config) {
-            document.getElementById('status-banner').classList.remove('hidden');
-            document.getElementById('status-text').textContent = "注意：未偵測到資料庫配置。請在程式碼中貼入 Firebase Config。";
+            banner.classList.remove('hidden');
+            statusText.innerHTML = "<strong>設定未完成：</strong>偵測不到資料庫配置。請參考教學貼入您的 Firebase Config。";
         } else {
             const app = initializeApp(config);
             const auth = getAuth(app);
             const db = getFirestore(app);
-            const appId = typeof __app_id !== 'undefined' ? __app_id : 'lottery-github-stable-v2';
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'lottery-stable-v3';
 
             let students = [];
             let results = null;
 
-            // 初始化身份驗證 (Rule 3)
+            // 1. 初始化身份驗證 (Rule 3)
             const initAuth = async () => {
                 try {
                     if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -207,28 +217,34 @@
                         await signInAnonymously(auth);
                     }
                 } catch (error) {
-                    console.error("Auth error:", error);
-                    document.getElementById('status-banner').classList.remove('hidden');
-                    document.getElementById('status-text').textContent = "連線驗證失敗，名單同步功能將無法運作。";
+                    console.error("Firebase Auth Error:", error.code, error.message);
+                    banner.classList.remove('hidden');
+                    // 根據錯誤代碼提供具體建議
+                    if (error.code === 'auth/operation-not-allowed') {
+                        statusText.innerHTML = "<strong>驗證失敗：</strong>請到 Firebase 控制台開啟「匿名 (Anonymous)」登入功能。";
+                    } else {
+                        statusText.textContent = "連線驗證失敗，請檢查 Firebase Config 是否正確。";
+                    }
                 }
             };
 
-            // 監聽驗證狀態，確認登入後才開啟資料監聽 (解決 permission-denied)
+            // 2. 登入成功後啟動監聽器
             onAuthStateChanged(auth, (user) => {
                 if (user) {
-                    setupDatabaseListeners();
+                    banner.classList.add('hidden'); // 登入成功隱藏警告
+                    setupListeners();
                 }
             });
 
             initAuth();
 
-            function setupDatabaseListeners() {
+            function setupListeners() {
                 // 監聽報名名單 (路徑 5 段)
                 const studentsRef = collection(db, 'artifacts', appId, 'public', 'data', 'participants');
                 onSnapshot(studentsRef, (snapshot) => {
                     students = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
                     renderList();
-                }, (err) => console.error("名單監聽權限錯誤:", err));
+                }, (err) => console.error("名單讀取錯誤:", err));
 
                 // 監聽抽籤結果 (路徑 6 段)
                 const resultRef = doc(db, 'artifacts', appId, 'public', 'data', 'lottery_results', 'latest');
@@ -241,18 +257,25 @@
                         document.getElementById('result-area').classList.add('hidden');
                         document.getElementById('setup-area').classList.remove('hidden');
                     }
-                    updateMyStatus();
-                }, (err) => console.error("結果監聽權限錯誤:", err));
+                    updatePersonalStatus();
+                }, (err) => console.error("結果讀取錯誤:", err));
             }
 
+            // --- 渲染函數 ---
             function renderList() {
                 document.getElementById('student-count').textContent = students.length;
                 const tbody = document.getElementById('student-tbody');
-                if (students.length > 0) {
-                    document.getElementById('empty-list').classList.add('hidden');
-                    document.getElementById('student-table').classList.remove('hidden');
+                const empty = document.getElementById('empty-list');
+                const table = document.getElementById('student-table');
+
+                if (students.length === 0) {
+                    empty.classList.remove('hidden');
+                    table.classList.add('hidden');
+                } else {
+                    empty.classList.add('hidden');
+                    table.classList.remove('hidden');
                     tbody.innerHTML = [...students].reverse().map(s => `
-                        <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
+                        <tr class="border-b border-slate-50 hover:bg-indigo-50/30 transition-colors animate-fade-in">
                             <td class="p-4 font-bold text-slate-700">${s.name}</td>
                             <td class="p-4 font-mono text-slate-500">${s.studentId}</td>
                             <td class="p-4 text-xs text-slate-400">${s.dept || '-'}</td>
@@ -271,21 +294,23 @@
                     <div class="py-3 flex justify-between items-center border-b border-slate-50 last:border-0">
                         <span class="text-slate-400 font-mono w-8 text-sm">${i+1}.</span>
                         <span class="flex-1 font-bold text-slate-800">${w.name}</span>
-                        <span class="text-xs font-mono bg-slate-100 px-2 py-1 rounded text-slate-500">${w.studentId}</span>
+                        <span class="text-xs font-mono bg-slate-100 px-2 py-1 rounded text-slate-500 shadow-sm">${w.studentId}</span>
                     </div>`).join('');
                 
                 document.getElementById('waitlist-list').innerHTML = results.waitlist.map((w, i) => `
                     <div class="py-3 flex justify-between items-center border-b border-slate-50 last:border-0">
-                        <span class="text-amber-500 font-bold w-12 text-xs">備${i+1}</span>
+                        <span class="text-amber-500 font-bold w-12 text-xs text-center">備${i+1}</span>
                         <span class="flex-1 font-medium text-slate-700">${w.name}</span>
                         <span class="text-xs font-mono text-slate-400">${w.studentId}</span>
                     </div>`).join('');
             }
 
+            // --- 業務邏輯 ---
             window.handleDraw = async function() {
                 if (!auth.currentUser || students.length === 0) return;
                 const win = parseInt(document.getElementById('setting-winners').value) || 10;
                 const wait = parseInt(document.getElementById('setting-waitlist').value) || 10;
+
                 const shuffled = [...students].sort(() => Math.random() - 0.5);
                 const data = {
                     winners: shuffled.slice(0, win).map(s => ({name: s.name, studentId: s.studentId})),
@@ -295,11 +320,11 @@
                 };
                 try {
                     await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'lottery_results', 'latest'), data);
-                } catch (e) { alert("抽籤失敗，請檢查權限"); }
+                } catch (e) { alert("執行抽籤失敗，請檢查資料庫規則設定。"); }
             };
 
             window.resetSystem = async function() {
-                if(!auth.currentUser || !confirm("確定清空所有報名資料與抽籤結果？")) return;
+                if(!auth.currentUser || !confirm("確定要清空目前所有資料嗎？")) return;
                 try {
                     await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'lottery_results', 'latest'));
                     const snap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'participants'));
@@ -323,11 +348,11 @@
                     });
                     document.getElementById('student-form-card').classList.add('hidden');
                     document.getElementById('submit-success').classList.remove('hidden');
-                    updateMyStatus();
-                } catch (err) { alert("提交失敗"); }
+                    updatePersonalStatus();
+                } catch (err) { alert("提交失敗，請檢查資料庫設定。"); }
             };
 
-            function updateMyStatus() {
+            function updatePersonalStatus() {
                 const sid = document.getElementById('input-sid').value;
                 if (!sid || !results) return;
                 const statusBox = document.getElementById('student-status-box');
@@ -337,16 +362,16 @@
                 const win = results.winners.some(w => w.studentId === sid);
                 const waitIdx = results.waitlist.findIndex(w => w.studentId === sid);
                 
-                if(win) content.innerHTML = `<div class="bg-green-50 text-green-700 p-6 rounded-2xl font-bold text-lg border border-green-200">恭喜！正取錄取！ 🎉</div>`;
-                else if(waitIdx !== -1) content.innerHTML = `<div class="bg-amber-50 text-amber-700 p-6 rounded-2xl font-bold text-lg border border-amber-200">您在備取名單：第 ${waitIdx+1} 位</div>`;
-                else content.innerHTML = `<div class="bg-slate-100 text-slate-500 p-6 rounded-2xl font-medium">很遺憾，本次未中籤。</div>`;
+                if(win) content.innerHTML = `<div class="bg-green-100 text-green-700 p-6 rounded-2xl font-black text-xl border border-green-200 animate-fade-in shadow-inner">恭喜您，正取錄取！ 🎉</div>`;
+                else if(waitIdx !== -1) content.innerHTML = `<div class="bg-amber-100 text-amber-700 p-6 rounded-2xl font-bold text-lg border border-amber-200 animate-fade-in">您在備取名單：第 ${waitIdx+1} 位</div>`;
+                else content.innerHTML = `<div class="bg-slate-100 text-slate-400 p-6 rounded-2xl font-medium border border-slate-200">很遺憾，本次未中籤。</div>`;
             }
 
             window.copyResults = function() {
                 if (!results) return;
-                const text = `【抽籤結果】\n正取名單：\n${results.winners.map((w,i)=>`${i+1}.${w.name}(${w.studentId})`).join('\n')}\n\n備取名單：\n${results.waitlist.map((w,i)=>`備${i+1}.${w.name}`).join('\n')}`;
+                const text = `【抽籤結果公告】\n正取名單：\n${results.winners.map((w,i)=>`${i+1}.${w.name}(${w.studentId})`).join('\n')}\n\n備取名單 (依序)：\n${results.waitlist.map((w,i)=>`備${i+1}.${w.name}`).join('\n')}`;
                 const temp = document.createElement('textarea'); temp.value = text; document.body.appendChild(temp); temp.select(); document.execCommand('copy'); document.body.removeChild(temp);
-                alert("結果已複製到剪貼簿！");
+                alert("抽籤結果已複製到剪貼簿！");
             };
         }
     </script>
